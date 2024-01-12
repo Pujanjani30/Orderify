@@ -22,7 +22,7 @@ const login = async (data) => {
 
 const register = async (data) => {
         await hashPassword(data);
-        
+
         let check = await Users.findOne({ user_email: data.user_email });
         if (check)
                 throw new Error("ALREADY_EXISTS")
