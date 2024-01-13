@@ -1,8 +1,8 @@
-require('dotenv').config();
+// require('dotenv').config();
 
-const mongoConfig = {
-    username: process.env.MONGO_USERNAME,
-    password: process.env.MONGO_PASSWORD
-}
+// const mongoConfig = {
+//     username: process.env.MONGO_USERNAME,
+//     password: process.env.MONGO_PASSWORD
+// }
 
-module.exports = mongoConfig;
+// module.exports = mongoConfig;
