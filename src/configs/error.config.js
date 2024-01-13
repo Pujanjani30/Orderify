@@ -19,6 +19,11 @@ const ERRORS = {
     'DEFAULT_MESSAGE': 'Server error. Please try again after some time.',
     'HTTP_CODE': 500
   },
+  'USER_NOT_EXISTS': {
+    'CODE': 4,
+    'DEFAULT_MESSAGE': 'User does not exists.',
+    'HTTP_CODE': 404
+  },
   'INVALID_CREDENTIALS': {
     'CODE': 9,
     'DEFAULT_MESSAGE': 'Invalid credentials.',

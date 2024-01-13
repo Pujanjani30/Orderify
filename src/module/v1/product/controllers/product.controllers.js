@@ -3,8 +3,10 @@ const { successResponse, errorResponse } = require('../../../../helpers/http-res
 
 const productGet = async (req, res) => {
   try {
-    let result = await productsServices.productGet(req.body, req.user);
-    successResponse({ res, message: 'Product fetched successfully', data: result });
+    const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+    let response = await productsServices.productGet(data);
+    successResponse({ res, message: 'Product fetched successfully', response });
 
   } catch (err) {
     errorResponse(res, err);
@@ -13,8 +15,10 @@ const productGet = async (req, res) => {
 
 const productAdd = async (req, res) => {
   try {
-    await productsServices.productAdd(req.body);
-    successResponse({ res, message: "Product added successfully" });
+    const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+    const response = await productsServices.productAdd(data);
+    successResponse({ res, message: "Product added successfully", response });
 
   } catch (err) {
     errorResponse(res, err);
@@ -23,8 +27,9 @@ const productAdd = async (req, res) => {
 
 const productUpdate = async (req, res) => {
   try {
-    let body = req.body;
-    await productsServices.productUpdate(body);
+    const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+    await productsServices.productUpdate(data);
     successResponse({ res, message: "Product updated successfully" });
 
   } catch (error) {
@@ -34,8 +39,9 @@ const productUpdate = async (req, res) => {
 
 const productDelete = async (req, res) => {
   try {
-    let body = req.body;
-    await productsServices.productDelete(body);
+    const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+    await productsServices.productDelete(data);
     successResponse({ res, message: "Product deleted successfully" });
 
   } catch (error) {

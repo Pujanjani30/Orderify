@@ -3,8 +3,8 @@ const { successResponse, errorResponse } = require('../../../../helpers/http-res
 
 const orderAll = async (req, res) => {
     try {
-        const orders = await orderService.orderAll();
-        successResponse({ res, message: 'Success', data: orders });
+        const response = await orderService.orderAll();
+        successResponse({ res, message: 'Success', response });
     }
     catch (err) {
         errorResponse(res, err);
@@ -13,7 +13,9 @@ const orderAll = async (req, res) => {
 
 const orderAdd = async (req, res) => {
     try {
-        await orderService.orderAdd(req.user);
+        const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+        await orderService.orderAdd(data);
         successResponse({ res, message: 'Success' });
     }
     catch (err) {
@@ -22,8 +24,10 @@ const orderAdd = async (req, res) => {
 }
 const orderUpdate = async (req, res) => {
     try {
-        let data = await orderService.orderUpdate(req.body);
-        successResponse({ res, message: 'Success updated', data });
+        const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+        let response = await orderService.orderUpdate(data);
+        successResponse({ res, message: 'Success updated', response });
     }
     catch (err) {
         errorResponse(res, err);

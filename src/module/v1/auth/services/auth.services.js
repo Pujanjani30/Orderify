@@ -6,35 +6,34 @@ require('dotenv').config();
 // const {gererateLink, decryptLink} = require("../../../../common/resetpasslink");
 
 const login = async (data) => {
-        let user = await Users.findOne({ user_email: data.user_email });
+  let user = await Users.findOne({ user_email: data.user_email });
 
-        if (!user)
-                throw new Error("INVALID_CREDENTIALS");
-        let check = await comparePassword(data.user_pass, user.user_pass);
-        if (!check)
-                throw new Error("INVALID_CREDENTIALS");
+  if (!user)
+    throw new Error("USER_NOT_EXISTS");
 
-        let userData = { ...user._doc, user_pass: undefined };
-        let encodedData = createToken({ id: user._id, role: user.user_role });
+  let password = await comparePassword(data.user_pass, user.user_pass);
+  if (!password)
+    throw new Error("INVALID_CREDENTIALS");
 
-        return { userData, encodedData };
+  let userData = { ...user._doc, user_pass: undefined };
+  let encodedData = createToken({ id: user._id, role: user.user_role });
+
+  return { userData, encodedData };
 }
 
 const register = async (data) => {
-        await hashPassword(data);
+  await hashPassword(data);
 
-        let check = await Users.findOne({ user_email: data.user_email });
-        if (check)
-                throw new Error("ALREADY_EXISTS")
+  let exists = await Users.findOne({ user_email: data.user_email });
+  if (exists)
+    throw new Error("ALREADY_EXISTS")
 
-        await Users.create(data);
+  const user = await Users.create(data);
 
-        const user = await Users.findOne({ user_email: data.user_email });
+  let userData = { ...user._doc, user_pass: undefined };
+  let encodedData = createToken({ id: user._id, role: user.user_role });
 
-        let userData = { ...user._doc, user_pass: undefined };
-        let encodedData = createToken({ id: user._id, role: user.user_role });
-
-        return { userData, encodedData };
+  return { userData, encodedData };
 }
 
 module.exports = { login, register };

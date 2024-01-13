@@ -3,8 +3,10 @@ const { errorResponse, successResponse } = require('../../../../helpers/http-res
 
 const cartGet = async (req, res) => {
     try {
-        const cart = await cartServices.cartGet(req.user);
-        successResponse({ res, message: 'Success', data: cart });
+        const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+        const response = await cartServices.cartGet(data);
+        successResponse({ res, message: 'Success', response });
     } catch (err) {
         errorResponse(res, err);
     }
@@ -12,8 +14,10 @@ const cartGet = async (req, res) => {
 
 const cartAdd = async (req, res) => {
     try {
-        await cartServices.cartAdd(req.body, req.user);
-        successResponse({ res, message: 'Success'});
+        const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+        await cartServices.cartAdd(data);
+        successResponse({ res, message: 'Success' });
     } catch (err) {
         errorResponse(res, err);
     }
@@ -21,8 +25,10 @@ const cartAdd = async (req, res) => {
 
 const cartDelete = async (req, res) => {
     try {
-        const cart = await cartServices.cartDelete(req.user, req.body);
-        successResponse({ res, message: 'Success', data: cart });
+        const data = Object.assign({}, req.body, req.params, req.query, req.user);
+
+        const response = await cartServices.cartDelete(data);
+        successResponse({ res, message: 'Success', response });
     } catch (err) {
         errorResponse(res, err);
     }

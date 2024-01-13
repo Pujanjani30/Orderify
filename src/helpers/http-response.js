@@ -1,21 +1,21 @@
-const {ERRORS} = require('../configs/error.config');
+const { ERRORS } = require('../configs/error.config');
 
-const successResponse = ({res, data = undefined, message, token = undefined}) => {
-    
+const successResponse = ({ res, response = undefined, message, token = undefined }) => {
+
     res.status(200).json({
         status: 200,
         message,
-        data,
+        data: response,
         token
     });
 }
 
-const errorResponse = (res,err) => {
-    console.log(err); 
+const errorResponse = (res, err) => {
+    console.log(err);
 
     let error = ERRORS[err.message];
 
-    if(!error) error = ERRORS['DEFAULT_ERROR'];
+    if (!error) error = ERRORS['DEFAULT_ERROR'];
 
     res.status(error.HTTP_CODE).json({
         status: error.HTTP_CODE || 500,

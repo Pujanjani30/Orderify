@@ -1,18 +1,21 @@
-const { productGet, productAdd, productUpdate, productDelete } = require('../controllers/product.controllers');
+// controllers
+const productController = require('../controllers/product.controllers');
+
+// middlewares
 const { verifyToken } = require('../../../../middlewares/token');
 const roleValidator = require('../../../../middlewares/role-validator');
-const { productGetSchema, productAddSchema, productUpdateSchema } = require('../validator/index');
 const validator = require('../../../../middlewares/validator');
 
+// validators
+const { productGetSchema, productAddSchema, productUpdateSchema } = require('../validator/index');
+
 const productRoutes = async (app) => {
+  app.post('/product/pagging', verifyToken, validator(productGetSchema), productController.productGet);
+  app.post('/product', verifyToken, roleValidator(['admin']), validator(productAddSchema), productController.productAdd);
 
-    app.post('/product/pagging', verifyToken, validator(productGetSchema), productGet);
+  app.put('/product', verifyToken, roleValidator(['admin']), validator(productUpdateSchema), productController.productUpdate);
 
-    app.post('/product', verifyToken, roleValidator(['admin']), validator(productAddSchema), productAdd);
-
-    app.put('/product', verifyToken, roleValidator(['admin']), validator(productUpdateSchema), productUpdate);
-
-    app.delete('/product', verifyToken, roleValidator(['admin']), productDelete);
+  app.delete('/product', verifyToken, roleValidator(['admin']), productController.productDelete);
 }
 
 module.exports = productRoutes;

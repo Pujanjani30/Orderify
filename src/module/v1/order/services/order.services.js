@@ -3,7 +3,6 @@ const Order = require('../../../../models/order.model');
 const moment = require('moment');
 
 const orderAll = async () => {
-
     const today = moment().startOf('day');
 
     const data = await Order.aggregate([
@@ -50,12 +49,12 @@ const orderAll = async () => {
             }
         },
         {
-            $lookup:{
-                from:'orders',
-                let:{order_fk_prd_id:'$order_fk_prd_id'},
-                pipeline:[
+            $lookup: {
+                from: 'orders',
+                let: { order_fk_prd_id: '$order_fk_prd_id' },
+                pipeline: [
                     {
-                        $match:{
+                        $match: {
                             $expr: {
                                 $eq: ['$order_fk_prd_id', '$$order_fk_prd_id']
                             }
@@ -68,7 +67,7 @@ const orderAll = async () => {
                         }
                     }
                 ],
-                as:'order'
+                as: 'order'
             }
         },
         {
@@ -123,10 +122,9 @@ const orderAll = async () => {
     return data;
 }
 
-const orderAdd = async (user) => {
-
+const orderAdd = async (data) => {
     // find cart based on user id
-    let cart = await Cart.findOne({ cart_fk_user_id: user.id })
+    let cart = await Cart.findOne({ cart_fk_user_id: data.id })
 
     // if cart is empty then return
     if (!cart) return;
@@ -138,7 +136,7 @@ const orderAdd = async (user) => {
 
     // find all orders of today based collected product ids
     let orders = await Order.find({
-        order_fk_user_id: user.id, order_fk_prd_id: { $in: prdIds },
+        order_fk_user_id: data.id, order_fk_prd_id: { $in: prdIds },
         createdAt: {
             $gte: today.toDate(),
             $lte: moment(today).endOf('day').toDate()
@@ -162,7 +160,7 @@ const orderAdd = async (user) => {
 
             // if item does not exist in orders then add item to newItems
             newItems.push({
-                order_fk_user_id: user.id,
+                order_fk_user_id: data.id,
                 order_fk_prd_id: item.cartitm_fk_prd_id,
                 order_prd_qty: item.cartitm_prd_qty
             });
@@ -173,21 +171,21 @@ const orderAdd = async (user) => {
     await Order.create(newItems);
 
     // empty cart
-    return await Cart.updateOne({ cart_fk_user_id: user.id }, { $set: { cart_items: [] } });
+    return await Cart.updateOne({ cart_fk_user_id: data.id }, { $set: { cart_items: [] } });
 
 }
 
-const orderUpdate = async (body) => {
+const orderUpdate = async (data) => {
     const today = moment().startOf('day');
 
     await Order.updateMany({
-        order_fk_prd_id: { $in: body.prd_ids }, 
+        order_fk_prd_id: { $in: data.prd_ids },
         createdAt: {
             $gte: today.toDate(),
             $lte: moment(today).endOf('day').toDate()
         },
         order_status: 'pending'
-    }, { $set: { order_status: body.order_status } });
+    }, { $set: { order_status: data.order_status } });
 
 }
 module.exports = { orderAll, orderAdd, orderUpdate };

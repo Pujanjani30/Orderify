@@ -1,18 +1,18 @@
 const Products = require("../../../../models/product.model");
 
-const productGet = async (body, user) => {
+const productGet = async (data) => {
   let conditions = {
-    prd_name: { $regex: new RegExp(body.search, "i") },
+    prd_name: { $regex: new RegExp(data.search, "i") },
   }
 
-  if (user.role == "user") conditions.prd_is_visible = true;
+  if (data.role == "user") conditions.prd_is_visible = true;
 
   let products = await Products.find(conditions)
     .select('prd_name prd_price prd_img prd_is_visible')
-    .skip(body.page * body.limit - body.limit).limit(body.limit);
+    .skip(data.page * data.limit - data.limit).limit(data.limit);
 
   let total = await Products.countDocuments(conditions);
-  count = Math.ceil(total / body.limit)
+  count = Math.ceil(total / data.limit)
 
   return { products: products, total_page: count, total_products: total };
 }
@@ -22,7 +22,7 @@ const productAdd = async (data) => {
   if (check)
     throw new Error("ALREADY_EXISTS");
 
-  await Products.create(data);
+  return await Products.create(data);
 }
 
 const productUpdate = async (data) => {

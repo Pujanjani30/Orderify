@@ -1,15 +1,19 @@
-const {register,login, resetPassLinkMailer, resetPass} = require('../controllers/auth.controllers');
+// controllers
+const authController = require('../controllers/auth.controllers');
+
+// middlewares
 const validator = require('../../../../middlewares/validator');
+
+// validators
 const { loginSchema, registerSchema } = require('../validator');
 
 const registerRoutes = async (app) => {
+  app.post('/register', validator(registerSchema), authController.register);
 
-    app.post('/register', validator(registerSchema), register);
+  app.post('/login', validator(loginSchema), authController.login);
 
-    app.post('/login', validator(loginSchema), login);
-
-    /* app.post('/reset-pass', resetPassLinkMailer);
-    
-    app.post('/reset-pass/:token', resetPass) */
+  /* app.post('/reset-pass', authController.resetPassLinkMailer);
+  
+  app.post('/reset-pass/:token', authController.resetPass) */
 }
 module.exports = registerRoutes;

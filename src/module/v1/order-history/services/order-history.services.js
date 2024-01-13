@@ -1,15 +1,15 @@
 const Order = require('../../../../models/order.model');
-const moment = require('moment');   
+const moment = require('moment');
 const mongoose = require('mongoose');
 
-const orderHistoryGet = async (body, user) => {
+const orderHistoryGet = async (data) => {
 
-       const startDate = moment(body.start_date, "DD-MM-YYYY").startOf('day');
-       const endDate = moment(body.end_date, "DD-MM-YYYY").endOf('day');
+       const startDate = moment(data.start_date, "DD-MM-YYYY").startOf('day');
+       const endDate = moment(data.end_date, "DD-MM-YYYY").endOf('day');
 
-       const userId = new mongoose.Types.ObjectId(user.id);
+       const userId = new mongoose.Types.ObjectId(data.id);
 
-       const data = await Order.aggregate([
+       const orderHistory = await Order.aggregate([
               {
                      $match: {
                             createdAt: {
@@ -33,8 +33,8 @@ const orderHistoryGet = async (body, user) => {
               {
                      $group: {
                             _id: { order_fk_prd_id: '$order_fk_prd_id', createdAt: '$createdAt' },
-                            order_status:{
-                                   $push:'$order_status'
+                            order_status: {
+                                   $push: '$order_status'
                             },
                             product_details: {
                                    $first: '$product'
@@ -48,14 +48,14 @@ const orderHistoryGet = async (body, user) => {
                             createdAt: {
                                    $first: '$createdAt'
                             },
-                            updatedAt : {
+                            updatedAt: {
                                    $first: '$updatedAt'
                             }
                      }
 
               },
               {
-                     $unwind:'$order_status'
+                     $unwind: '$order_status'
               },
               {
                      $project: {
@@ -63,7 +63,7 @@ const orderHistoryGet = async (body, user) => {
                             product_details: 1,
                             prd_total_qty: 1,
                             prd_total_amount: 1,
-                            order_status:1,
+                            order_status: 1,
                             createdAt: 1,
                             updatedAt: 1
                      }
@@ -77,7 +77,7 @@ const orderHistoryGet = async (body, user) => {
 
        ]);
 
-       return data;
+       return orderHistory;
 }
 
 module.exports = { orderHistoryGet };
