@@ -19,11 +19,11 @@ const apiDocs = {
             description: 'Development server',
         },
         {
-            url: `https://orderify-qebp.onrender.com`,
+            url: `https://orderify-lt47.onrender.com`,
             description: 'Production server',
         }
     ],
-    paths: { ...authSwagger,...userSwagger, ...productSwagger,...cartSwagger, ...orderSwagger, ...orderHistorySwagger },
+    paths: { ...authSwagger, ...userSwagger, ...productSwagger, ...cartSwagger, ...orderSwagger, ...orderHistorySwagger },
     components: {
         securitySchemes: {
             bearerAuth: {
