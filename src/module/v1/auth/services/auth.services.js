@@ -1,7 +1,14 @@
-const Users = require("../../../../models/user.model");
-const { createToken } = require("../../../../middlewares/token");
-const { hashPassword, comparePassword } = require("../../../../common/hash-password");
+// config
 require('dotenv').config();
+
+// models
+const Users = require("../../../../models/user.model");
+
+// middlewares
+const { createToken } = require("../../../../middlewares/token");
+
+// common
+const { hashPassword, comparePassword } = require("../../../../common/hash-password");
 // const mailer = require("../../../../common/mailer");
 // const {gererateLink, decryptLink} = require("../../../../common/resetpasslink");
 
@@ -22,12 +29,11 @@ const login = async (data) => {
 }
 
 const register = async (data) => {
-  await hashPassword(data);
-
   let exists = await Users.findOne({ user_email: data.user_email });
   if (exists)
     throw new Error("ALREADY_EXISTS")
 
+  await hashPassword(data);
   const user = await Users.create(data);
 
   let userData = { ...user._doc, user_pass: undefined };

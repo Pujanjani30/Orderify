@@ -134,7 +134,7 @@ const orderAdd = async (data) => {
     // collect all product ids from cart
     const prdIds = cart.cart_items.map(item => item.cartitm_fk_prd_id);
 
-    // find all orders of today based collected product ids
+    // find all orders of today based on collected product ids
     let orders = await Order.find({
         order_fk_user_id: data.id, order_fk_prd_id: { $in: prdIds },
         createdAt: {

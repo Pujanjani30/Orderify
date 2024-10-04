@@ -3,10 +3,12 @@ const apiRoutes = require('./api/v1');
 require('dotenv').config();
 require('./db/db.con')
 const cors = require('cors');
+
 const swaggerui = require('swagger-ui-express');
 const { apiDocs } = require('./swagger');
 
 const app = express();
+
 app.use('/api-docs', swaggerui.serve, swaggerui.setup(apiDocs));
 
 const port = process.env.PORT || 3000;
